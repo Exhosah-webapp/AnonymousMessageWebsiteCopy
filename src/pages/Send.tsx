@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../lib/api";
-import { Button, Logo, Panel, TextArea } from "../components/ui";
+import { Button, Field, Logo, Panel, TextArea } from "../components/ui";
 
 const MAX_CHARS = 1000;
 
@@ -10,6 +10,7 @@ export default function Send({ slug, nav }: { slug: string; nav: Nav }) {
   const [status, setStatus] = useState<"loading" | "ready" | "missing">("loading");
   const [displayName, setDisplayName] = useState("");
   const [message, setMessage] = useState("");
+  const [senderName, setSenderName] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +37,7 @@ export default function Send({ slug, nav }: { slug: string; nav: Nav }) {
     setSending(true);
     setError(null);
     try {
-      await api.send(slug, message.trim());
+      await api.send(slug, message.trim(), senderName.trim());
       setSent(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not send.");
@@ -91,6 +92,17 @@ export default function Send({ slug, nav }: { slug: string; nav: Nav }) {
             </h1>
 
             <Panel className="p-6 sm:p-7">
+              <div className="mb-4">
+                <Field
+                  id="sender"
+                  label="Your name"
+                  value={senderName}
+                  onChange={(e) => setSenderName(e.target.value)}
+                  placeholder="Enter your name"
+                  autoComplete="off"
+                  maxLength={40}
+                />
+              </div>
               <div className="mb-1.5 flex items-center justify-between">
                 <label htmlFor="msg" className="text-sm font-medium text-ink">
                   Your message
@@ -160,6 +172,7 @@ export default function Send({ slug, nav }: { slug: string; nav: Nav }) {
               variant="outline"
               onClick={() => {
                 setMessage("");
+                setSenderName("");
                 setSent(false);
                 setTimeout(() => areaRef.current?.focus(), 200);
               }}

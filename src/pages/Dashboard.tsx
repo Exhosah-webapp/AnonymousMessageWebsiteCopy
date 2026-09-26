@@ -162,8 +162,8 @@ export default function Dashboard({
                 {messages.map((m) => (
                   <Panel key={m.id} className="group flex flex-col p-5">
                     <div className="mb-3 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-faint">
-                        <span className="text-fuchsia">◆</span> Anonymous
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink">
+                        <span className="text-fuchsia">◆</span> {m.senderName}
                       </span>
                       <span className="text-xs text-faint">{timeAgo(m.createdAt)}</span>
                     </div>

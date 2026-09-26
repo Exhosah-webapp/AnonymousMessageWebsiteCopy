@@ -15,6 +15,7 @@ export type Message = {
   id: string;
   slug: string;
   message: string;
+  senderName: string;
   createdAt: string;
 };
 
@@ -56,6 +57,7 @@ type MessageRow = {
   id: string;
   slug: string;
   message: string;
+  sender_name: string | null;
   created_at: string;
 };
 
@@ -152,12 +154,27 @@ export const api = {
     return { slug: data.slug, displayName: data.display_name };
   },
 
-  async send(slug: string, message: string): Promise<{ ok: boolean }> {
+  async send(slug: string, message: string, senderName?: string): Promise<{ ok: boolean }> {
     const s = normalizeSlug(slug);
     const clean = message.trim().slice(0, 1000);
     if (!clean) throw new Error("Message is required.");
-    const { error } = await supabase.from("sm_messages").insert({ slug: s, message: clean });
-    if (error) throw new Error(friendly(error));
+    const name = (senderName ?? "").trim().slice(0, 40);
+
+    const { error } = await supabase
+      .from("sm_messages")
+      .insert({ slug: s, message: clean, sender_name: name || null });
+
+    if (error) {
+      // If the sender_name column hasn't been added yet, still deliver the message.
+      if (/sender_name/.test(error.message ?? "") || error.code === "PGRST204") {
+        const { error: retry } = await supabase
+          .from("sm_messages")
+          .insert({ slug: s, message: clean });
+        if (retry) throw new Error(friendly(retry));
+        return { ok: true };
+      }
+      throw new Error(friendly(error));
+    }
     return { ok: true };
   },
 
@@ -174,6 +191,7 @@ export const api = {
       id: r.id,
       slug: r.slug,
       message: r.message,
+      senderName: r.sender_name ?? "Anonymous",
       createdAt: r.created_at,
     }));
     return { messages };
