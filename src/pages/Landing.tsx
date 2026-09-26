@@ -82,7 +82,6 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function Landing({ nav }: { nav: Nav }) {
-  const [agree, setAgree] = useState(false);
   const [slug, setSlug] = useState("");
 
   function create() {
@@ -138,16 +137,7 @@ export default function Landing({ nav }: { nav: Nav }) {
                 className="w-full bg-transparent px-1 text-[15px] text-ink outline-none placeholder:text-faint"
               />
             </div>
-            <label className="mt-3 flex cursor-pointer items-center gap-2.5 text-sm text-subtle">
-              <input
-                type="checkbox"
-                checked={agree}
-                onChange={(e) => setAgree(e.target.checked)}
-                className="h-4 w-4 accent-[#8b5cff]"
-              />
-              I agree to the Terms &amp; Conditions
-            </label>
-            <Button className="mt-4" full disabled={!agree} onClick={create}>
+            <Button className="mt-4" full onClick={create}>
               Create your link →
             </Button>
           </Panel>

@@ -112,7 +112,7 @@ export default function Dashboard({
               onClick={() => nav.go(`send:${profile.slug}`)}
               className="mt-4 text-sm font-medium text-white/85 underline decoration-white/40 underline-offset-4 hover:text-white"
             >
-              Preview my page →
+              View my page →
             </button>
           </div>
         </Panel>
