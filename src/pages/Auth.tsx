@@ -17,7 +17,6 @@ export default function Auth({
   const [slug, setSlug] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
-  const [agree, setAgree] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,10 +25,6 @@ export default function Auth({
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (isSignup && !agree) {
-      setError("Please agree to the Terms to continue.");
-      return;
-    }
     setBusy(true);
     try {
       const profile = isSignup
@@ -98,7 +93,7 @@ export default function Auth({
                   label="Username"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="How senders see you"
+                  placeholder="Enter username"
                   autoComplete="nickname"
                 />
               )}
@@ -112,21 +107,6 @@ export default function Auth({
                 placeholder={isSignup ? "At least 6 characters" : "Your password"}
                 autoComplete={isSignup ? "new-password" : "current-password"}
               />
-
-              {isSignup && (
-                <label className="flex cursor-pointer items-start gap-2.5 text-sm text-subtle">
-                  <input
-                    type="checkbox"
-                    checked={agree}
-                    onChange={(e) => setAgree(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-[#8b5cff]"
-                  />
-                  <span>
-                    I agree to the <span className="text-ink underline decoration-line-2">Terms</span> and{" "}
-                    <span className="text-ink underline decoration-line-2">Privacy Policy</span>.
-                  </span>
-                </label>
-              )}
 
               {error && (
                 <p className="rounded-xl bg-fuchsia/10 px-3 py-2 text-xs font-medium text-fuchsia">{error}</p>
